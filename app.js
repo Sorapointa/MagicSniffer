@@ -192,12 +192,12 @@ parser.on("end", async () => {
     let isLoginFound = false
     let plainLoginHead = hexToBytes("45670070")
     let plainWindSeedHead = hexToBytes("456704AF")
-    let plainSceneTimeHead = hexToBytes("456700F5")
-    let plainSceneTimeHead2 = hexToBytes("0")
+    let plainRTTHead = hexToBytes("45670016")
+    let plainRTTHead2 = hexToBytes("0")
 
     let headXORKey
     let windSeedHead
-    let sceneTimeHead
+    let rttHead
     let headLengthXORKey
 
     allPackets.forEach(packet => {
@@ -210,17 +210,17 @@ parser.on("end", async () => {
                 const orgBytes = packet.bPackets[0].slice(0, 4).readUInt32BE()
                 headXORKey = xorBytes(hexToBytes(zero(orgBytes.toString(16), 8)), plainLoginHead)
                 print("Head XOR Key Found: " + bytesToHex(headXORKey))
-                sceneTimeHead = xorBytes(headXORKey, plainSceneTimeHead)
+                rttHead = xorBytes(headXORKey, plainRTTHead)
                 windSeedHead = xorBytes(headXORKey, plainWindSeedHead)
-                print("Scene Time Head: " + bytesToHex(sceneTimeHead))
+                print("RTT Head: " + bytesToHex(rttHead))
                 print("Wind Seed Head: " + bytesToHex(windSeedHead))
                 isLoginFound = true
             }
 
             if (isLoginFound) {
-                if (!headLengthXORKey && hexString.startsWith(bytesToHex(sceneTimeHead))) {
+                if (!headLengthXORKey && hexString.startsWith(bytesToHex(rttHead))) {
                     const withHeadBytes = packet.bPackets[0].slice(4, 8).readUInt16BE()
-                    headLengthXORKey = xorBytes(hexToBytes(zero(withHeadBytes.toString(16), 4)), plainSceneTimeHead2) // equals to withHeadBytes X ^ 0 = X
+                    headLengthXORKey = xorBytes(hexToBytes(zero(withHeadBytes.toString(16), 4)), plainRTTHead2) // equals to withHeadBytes X ^ 0 = X
                     print("Found HeadLengthXorKey: " + bytesToHex(headLengthXORKey))
                 } 
             }
@@ -245,8 +245,8 @@ parser.on("end", async () => {
                 let dict = {}
                 while(index != -1) {
                     index = sliceString.indexOf(combinedKeyFeature, lastIndex + 1)
+					print("lastIndex: " + lastIndex + " index: " + index + " diff: " + (index - lastIndex))
                     if (lastIndex > 0 && index - lastIndex == 4096 * 2) {
-                        print("lastIndex: " + lastIndex + " index: " + index + " diff: " + (index - lastIndex))
                         const potentialKey = sliceString.slice(lastIndex, index)
                         dict[potentialKey] = (dict[potentialKey] || 0) + 1
                     }
