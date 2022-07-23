@@ -1,0 +1,26 @@
+{
+  "name": "magicsniffer",
+  "version": "0.1.0",
+  "description": "How to fuck RSA xor key?",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sorapointa/MagicSniffer.git"
+  },
+  "keywords": [
+    "Sniffer"
+  ],
+  "author": "Yazawazi, WetABQ",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Sorapointa/MagicSniffer/issues"
+  },
+  "homepage": "https://github.com/Sorapointa/MagicSniffer#readme",
+  "dependencies": {
+    "pcap-parser": "^0.2.1",
+    "node-kcp-token": "github:TheLostTree/node-kcp"
+  }
+}
