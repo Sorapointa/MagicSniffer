@@ -1,7 +1,9 @@
 const fs = require("fs")
 const kcp = require("node-kcp-token")
 const pcapParser = require("pcap-parser")
-const { pcap } = require("./config.json")
+const {
+    pcap
+} = require("./config.json")
 
 const plainText = fs.readFileSync("./plaintext.bin")
 
@@ -160,11 +162,11 @@ const zero = (text, length) => {
     return text
 }
 
-const sortDict = (dict) => { 
+const sortDict = (dict) => {
     let items = Object.keys(dict).map(key => {
         return [key, dict[key]]
     })
-  
+
     return items.sort((first, second) => {
         return second[1] - first[1]
     })
@@ -222,7 +224,7 @@ parser.on("end", async () => {
                     const withHeadBytes = packet.bPackets[0].slice(4, 8).readUInt16BE()
                     headLengthXORKey = xorBytes(hexToBytes(zero(withHeadBytes.toString(16), 4)), plainRTTHead2) // equals to withHeadBytes X ^ 0 = X
                     print("Found HeadLengthXorKey: " + bytesToHex(headLengthXORKey))
-                } 
+                }
             }
         }
     })
@@ -243,9 +245,9 @@ parser.on("end", async () => {
                 let lastIndex = -1
                 let index = 0
                 let dict = {}
-                while(index != -1) {
+                while (index != -1) {
                     index = sliceString.indexOf(combinedKeyFeature, lastIndex + 1)
-					print("lastIndex: " + lastIndex + " index: " + index + " diff: " + (index - lastIndex))
+                    print("lastIndex: " + lastIndex + " index: " + index + " diff: " + (index - lastIndex))
                     if (lastIndex > 0 && index - lastIndex == 4096 * 2) {
                         const potentialKey = sliceString.slice(lastIndex, index)
                         dict[potentialKey] = (dict[potentialKey] || 0) + 1
